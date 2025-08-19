@@ -78,6 +78,51 @@ services:
       SCHEMAREGISTRY_UI_TITLE: "Schema Registry UI"
       SCHEMAREGISTRY_UI_READONLY: "false"
 
+  # Producer service
+  producer:
+    build: ./producer
+    container_name: producer
+    depends_on:
+      - kafka
+    ports:
+      - "3000:3000"
+    environment:
+      KAFKA_BROKER: kafka:29092
+    volumes:
+      - ./producer:/app
+      - /app/node_modules
+
+  # Consumer service
+  consumer:
+    build: ./consumer
+    container_name: consumer
+    depends_on:
+      - kafka
+    ports:
+      - "3001:3001"
+    environment:
+      KAFKA_BROKER: kafka:29092
+    volumes:
+      - ./consumer:/app
+      - /app/node_modules
+
+  # Frontend service
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        REACT_APP_PRODUCER_URL: http://localhost:3000
+        REACT_APP_CONSUMER_URL: http://localhost:3001
+    container_name: frontend
+    depends_on:
+      - producer
+      - consumer
+    ports:
+      - "3002:3000"
+    environment:
+      REACT_APP_PRODUCER_URL: http://localhost:3000
+      REACT_APP_CONSUMER_URL: http://localhost:3001
+
 volumes:
   zookeeper-data:
   zookeeper-logs:

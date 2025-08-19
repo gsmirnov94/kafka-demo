@@ -3,8 +3,15 @@ import io from 'socket.io-client';
 import axios from 'axios';
 import './App.css';
 
-const PRODUCER_URL = 'http://localhost:3001';
-const CONSUMER_URL = 'http://localhost:3002';
+// Use environment variables with fallbacks for both Docker and local development
+const PRODUCER_URL = process.env.REACT_APP_PRODUCER_URL || 'http://localhost:3000';
+const CONSUMER_URL = process.env.REACT_APP_CONSUMER_URL || 'http://localhost:3001';
+
+// Debug logging
+console.log('Frontend Configuration:');
+console.log('PRODUCER_URL:', PRODUCER_URL);
+console.log('CONSUMER_URL:', CONSUMER_URL);
+console.log('Environment:', process.env.NODE_ENV);
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -52,20 +59,38 @@ function App() {
   // Load available topics
   const loadTopics = async () => {
     try {
+      console.log('Loading topics from:', `${PRODUCER_URL}/topics`);
       const response = await axios.get(`${PRODUCER_URL}/topics`);
+      console.log('Topics response:', response.data);
       setTopics(response.data.topics || []);
     } catch (error) {
       console.error('Error loading topics:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: `${PRODUCER_URL}/topics`
+      });
     }
   };
 
   // Load consumer status
   const loadConsumerStatus = async () => {
     try {
+      console.log('Loading consumer status from:', `${CONSUMER_URL}/status`);
       const response = await axios.get(`${CONSUMER_URL}/status`);
+      console.log('Consumer status response:', response.data);
       setConsumerStatus(response.data);
     } catch (error) {
       console.error('Error loading consumer status:', error);
+      console.error('Error details:', {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: `${CONSUMER_URL}/status`
+      });
     }
   };
 
