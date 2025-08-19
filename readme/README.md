@@ -29,15 +29,15 @@ docker-compose up -d
 
 ```bash
 # Producer сервис
-cd producer
+cd services/producer
 npm install
 
 # Consumer сервис
-cd ../consumer
+cd ../services/consumer
 npm install
 
 # React фронтенд
-cd ../frontend
+cd ../services/frontend
 npm install
 ```
 
@@ -45,15 +45,15 @@ npm install
 
 ```bash
 # Terminal 1: Producer сервис
-cd producer
+cd services/producer
 npm start
 
 # Terminal 2: Consumer сервис
-cd consumer
+cd services/consumer
 npm start
 
 # Terminal 3: React фронтенд
-cd frontend
+cd services/frontend
 npm start
 ```
 

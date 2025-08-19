@@ -80,7 +80,7 @@ services:
 
   # Producer service
   producer:
-    build: ./producer
+    build: ./services/producer
     container_name: producer
     depends_on:
       - kafka
@@ -91,12 +91,12 @@ services:
       KAFKA_BROKER: kafka:29092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
     volumes:
-      - ./producer:/app
+      - ./services/producer:/app
       - /app/node_modules
 
   # Consumer service
   consumer:
-    build: ./consumer
+    build: ./services/consumer
     container_name: consumer
     depends_on:
       - kafka
@@ -107,13 +107,13 @@ services:
       KAFKA_BROKER: kafka:29092
       SCHEMA_REGISTRY_URL: http://schema-registry:8081
     volumes:
-      - ./consumer:/app
+      - ./services/consumer:/app
       - /app/node_modules
 
   # Frontend service
   frontend:
     build:
-      context: ./frontend
+      context: ./services/frontend
       args:
         REACT_APP_PRODUCER_URL: http://localhost:3000
         REACT_APP_CONSUMER_URL: http://localhost:3001

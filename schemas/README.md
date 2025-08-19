@@ -16,10 +16,10 @@ cd schemas
 ### 3. Тестирование
 ```bash
 # В отдельном терминале запустите Producer
-cd ../producer && npm start
+cd ../services/producer && npm start
 
 # В другом терминале запустите Consumer
-cd ../consumer && npm start
+cd ../services/consumer && npm start
 
 # Вернитесь в папку схем и протестируйте
 cd ../schemas
@@ -90,7 +90,7 @@ cd schemas
 
 ```bash
 # Запуск Producer сервиса (в отдельном терминале)
-cd ../producer
+cd ../services/producer
 npm start
 
 # Тестирование схемы с отправкой сообщения

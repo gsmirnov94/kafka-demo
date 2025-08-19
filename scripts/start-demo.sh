@@ -46,21 +46,21 @@ fi
 
 # Установка зависимостей Producer
 echo "📦 Установка зависимостей Producer сервиса..."
-cd producer
+cd services/producer
 npm install
-cd ..
+cd ../..
 
 # Установка зависимостей Consumer
 echo "📦 Установка зависимостей Consumer сервиса..."
-cd consumer
+cd services/consumer
 npm install
-cd ..
+cd ../..
 
 # Установка зависимостей Frontend
 echo "📦 Установка зависимостей React фронтенда..."
-cd frontend
+cd services/frontend
 npm install
-cd ..
+cd ../..
 
 echo ""
 echo "🎉 Установка завершена!"
@@ -68,13 +68,13 @@ echo ""
 echo "📋 Для запуска демо-системы выполните следующие команды в разных терминалах:"
 echo ""
 echo "Terminal 1 (Producer):"
-echo "  cd producer && npm start"
+echo "  cd services/producer && npm start"
 echo ""
 echo "Terminal 2 (Consumer):"
-echo "  cd consumer && npm start"
+echo "  cd services/consumer && npm start"
 echo ""
 echo "Terminal 3 (Frontend):"
-echo "  cd frontend && npm start"
+echo "  cd services/frontend && npm start"
 echo ""
 echo "🌐 Доступные сервисы:"
 echo "  - React Dashboard: http://localhost:3000"
