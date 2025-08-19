@@ -18,9 +18,15 @@ cd schemas
 # В отдельном терминале запустите Producer
 cd ../producer && npm start
 
+# В другом терминале запустите Consumer
+cd ../consumer && npm start
+
 # Вернитесь в папку схем и протестируйте
 cd ../schemas
 ./test-user-schema.sh
+
+# Тестирование валидации
+./test-validation.sh
 ```
 
 ## 🎯 Схема User
@@ -58,6 +64,7 @@ cd ../schemas
 - **`register-user-schema.sh`** - Регистрация схемы
 - **`test-user-schema.sh`** - Тестирование схемы
 - **`check-compatibility.sh`** - Проверка совместимости
+- **`test-validation.sh`** - Тестирование валидации в Producer/Consumer
 - **`example-producer-usage.js`** - Пример использования в Producer
 
 ## 🚀 Быстрый старт
@@ -109,6 +116,54 @@ cd ../schemas
 | **Consumer API** | http://localhost:3001 | API для получения сообщений |
 
 ## 🔧 Использование схемы
+
+### Валидация сообщений
+
+Producer и Consumer сервисы теперь поддерживают валидацию сообщений по схеме User:
+
+#### Producer API - Валидация при отправке
+```bash
+# Валидация включена по умолчанию для user топиков
+curl -X POST http://localhost:3000/send-message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topic": "user-topic",
+    "message": {"name": "Иван", "age": 25},
+    "key": "user-001"
+  }'
+
+# Отключение валидации
+curl -X POST http://localhost:3000/send-message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topic": "user-topic",
+    "message": {"name": "Иван", "age": 25},
+    "validateSchema": false
+  }'
+```
+
+#### Producer API - Отдельная валидация
+```bash
+curl -X POST http://localhost:3000/validate-message \
+  -H "Content-Type: application/json" \
+  -d '{"message": {"name": "Иван", "age": 25}}'
+```
+
+#### Consumer API - Валидация при получении
+Consumer автоматически валидирует сообщения из user топиков и добавляет результат валидации в WebSocket события.
+
+#### Consumer API - Отдельная валидация
+```bash
+curl -X POST http://localhost:3001/validate-message \
+  -H "Content-Type: application/json" \
+  -d '{"message": {"name": "Иван", "age": 25}}'
+```
+
+### Тестирование валидации
+```bash
+# Полное тестирование валидации
+./test-validation.sh
+```
 
 ### Регистрация через API
 

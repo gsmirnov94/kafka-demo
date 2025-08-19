@@ -84,10 +84,12 @@ services:
     container_name: producer
     depends_on:
       - kafka
+      - schema-registry
     ports:
       - "3000:3000"
     environment:
       KAFKA_BROKER: kafka:29092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
     volumes:
       - ./producer:/app
       - /app/node_modules
@@ -98,10 +100,12 @@ services:
     container_name: consumer
     depends_on:
       - kafka
+      - schema-registry
     ports:
       - "3001:3001"
     environment:
       KAFKA_BROKER: kafka:29092
+      SCHEMA_REGISTRY_URL: http://schema-registry:8081
     volumes:
       - ./consumer:/app
       - /app/node_modules

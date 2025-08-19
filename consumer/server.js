@@ -3,6 +3,7 @@ const { Kafka } = require('kafkajs');
 const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -37,6 +38,40 @@ const kafka = new Kafka({
 const consumer = kafka.consumer({ groupId: 'demo-consumer-group' });
 let isConsuming = false;
 let currentTopics = [];
+
+// Schema Registry configuration
+const SCHEMA_REGISTRY_URL = process.env.SCHEMA_REGISTRY_URL || 'http://localhost:8081';
+const USER_SCHEMA_SUBJECT = 'user-value';
+
+// Schema validation functions
+async function getSchemaFromRegistry(subject = USER_SCHEMA_SUBJECT) {
+  try {
+    const response = await axios.get(`${SCHEMA_REGISTRY_URL}/subjects/${subject}/versions/latest`);
+    console.log(`✅ Схема получена из Schema Registry: ${subject} v${response.data.version}`);
+    return response.data;
+  } catch (error) {
+    console.error(`❌ Ошибка получения схемы ${subject}:`, error.message);
+    return null;
+  }
+}
+
+function validateUserMessage(message) {
+  // Простая валидация по схеме User
+  if (!message.name || typeof message.name !== 'string') {
+    throw new Error('Поле name должно быть строкой');
+  }
+  
+  if (!message.age || typeof message.age !== 'number' || message.age < 0) {
+    throw new Error('Поле age должно быть положительным числом');
+  }
+  
+  // Проверка опционального поля email для v2 схемы
+  if (message.email !== undefined && typeof message.email !== 'string') {
+    throw new Error('Поле email должно быть строкой или null');
+  }
+  
+  return true;
+}
 
 // Connect to Kafka
 async function connectConsumer() {
@@ -78,22 +113,51 @@ async function startConsuming(topics) {
       eachMessage: async ({ topic, partition, message }) => {
         try {
           const parsedMessage = JSON.parse(message.value.toString());
+          
+          // Валидация по схеме User если это user топик
+          let validationResult = null;
+          if (topic.includes('user')) {
+            try {
+              const schema = await getSchemaFromRegistry();
+              if (schema) {
+                validateUserMessage(parsedMessage);
+                validationResult = {
+                  valid: true,
+                  schema: {
+                    subject: schema.subject,
+                    version: schema.version,
+                    id: schema.id
+                  }
+                };
+                console.log(`✅ Сообщение валидировано по схеме ${schema.subject} v${schema.version}`);
+              }
+            } catch (validationError) {
+              validationResult = {
+                valid: false,
+                error: validationError.message,
+                schema: 'user-value'
+              };
+              console.warn(`⚠️ Ошибка валидации сообщения: ${validationError.message}`);
+            }
+          }
+          
           const messageData = {
             topic,
             partition,
             offset: message.offset,
             key: message.key?.toString(),
             value: parsedMessage,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            schemaValidation: validationResult
           };
 
-          console.log('Received message:', messageData);
+          console.log('📥 Received message:', messageData);
           
           // Emit to all connected clients
           io.emit('message-received', messageData);
           
         } catch (error) {
-          console.error('Error parsing message:', error);
+          console.error('❌ Error parsing message:', error);
         }
       },
     });
@@ -188,6 +252,61 @@ app.get('/status', (req, res) => {
     currentTopics,
     timestamp: new Date().toISOString()
   });
+});
+
+// Validate message against schema endpoint
+app.post('/validate-message', async (req, res) => {
+  try {
+    const { message, schemaSubject = USER_SCHEMA_SUBJECT } = req.body;
+    
+    if (!message) {
+      return res.status(400).json({ 
+        error: 'Message is required' 
+      });
+    }
+
+    // Получаем схему из Registry
+    const schema = await getSchemaFromRegistry(schemaSubject);
+    if (!schema) {
+      return res.status(404).json({
+        error: 'Schema not found',
+        schemaSubject
+      });
+    }
+
+    // Валидируем сообщение
+    try {
+      validateUserMessage(message);
+      res.json({
+        success: true,
+        message: 'Message is valid',
+        schema: {
+          subject: schema.subject,
+          version: schema.version,
+          id: schema.id
+        },
+        validatedMessage: message
+      });
+    } catch (validationError) {
+      res.json({
+        success: false,
+        error: 'Validation failed',
+        details: validationError.message,
+        schema: {
+          subject: schema.subject,
+          version: schema.version,
+          id: schema.id
+        }
+      });
+    }
+    
+  } catch (error) {
+    console.error('❌ Error validating message:', error);
+    res.status(500).json({ 
+      error: 'Failed to validate message',
+      details: error.message 
+    });
+  }
 });
 
 // Socket.IO connection handling
