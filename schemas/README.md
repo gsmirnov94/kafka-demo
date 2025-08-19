@@ -1,252 +1,254 @@
-# 📋 Schema Registry - Примеры использования
+# 📋 Schema Registry - Схемы данных
 
-Этот раздел содержит примеры схем для валидации сообщений в Kafka с использованием Schema Registry.
+## 🚀 Быстрый старт (5 минут)
+
+### 1. Запуск инфраструктуры
+```bash
+docker-compose up -d
+```
+
+### 2. Регистрация схемы
+```bash
+cd schemas
+./register-user-schema.sh
+```
+
+### 3. Тестирование
+```bash
+# В отдельном терминале запустите Producer
+cd ../producer && npm start
+
+# Вернитесь в папку схем и протестируйте
+cd ../schemas
+./test-user-schema.sh
+```
+
+## 🎯 Схема User
+
+### 📊 Базовая схема v1
+```json
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.kafka.demo",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"}
+  ]
+}
+```
+
+### 📊 Расширенная схема v2
+```json
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.kafka.demo",
+  "fields": [
+    {"name": "name", "type": "string"},
+    {"name": "age", "type": "int"},
+    {"name": "email", "type": ["null", "string"], "default": null}
+  ]
+}
+```
+
+### 📁 Файлы схемы
+- **`user.avsc`** / **`user-schema.json`** - Базовая схема v1
+- **`user-v2.avsc`** / **`user-v2-schema.json`** - Расширенная схема v2
+- **`register-user-schema.sh`** - Регистрация схемы
+- **`test-user-schema.sh`** - Тестирование схемы
+- **`check-compatibility.sh`** - Проверка совместимости
+- **`example-producer-usage.js`** - Пример использования в Producer
 
 ## 🚀 Быстрый старт
 
-### 1. Проверка доступности Schema Registry
+### 1. Запуск инфраструктуры
 
 ```bash
-# Проверка здоровья сервиса
-curl http://localhost:8081/subjects
-
-# Получение списка схем
-curl http://localhost:8081/subjects
+# Запуск Kafka, Schema Registry и UI
+docker-compose up -d
 ```
 
 ### 2. Регистрация схемы
 
 ```bash
-# Создание JSON схемы для пользователя
-curl -X POST http://localhost:8081/subjects/users-value/versions \
-  -H "Content-Type: application/vnd.schemaregistry.v1+json" \
-  -d '{
-    "schema": "{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\",\"email\"]}"
-  }'
+# Переход в папку схем
+cd schemas
+
+# Регистрация схемы User в Schema Registry
+./register-user-schema.sh
 ```
 
-### 3. Получение схемы
+### 3. Тестирование схемы
 
 ```bash
-# Получение последней версии схемы
-curl http://localhost:8081/subjects/users-value/versions/latest
+# Запуск Producer сервиса (в отдельном терминале)
+cd ../producer
+npm start
 
-# Получение конкретной версии схемы
-curl http://localhost:8081/subjects/users-value/versions/1
+# Тестирование схемы с отправкой сообщения
+cd ../schemas
+./test-user-schema.sh
 ```
 
-## 📝 Примеры схем
+### 4. Проверка совместимости
 
-### Пользователь (User)
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "integer",
-      "description": "Уникальный идентификатор пользователя"
-    },
-    "name": {
-      "type": "string",
-      "description": "Имя пользователя"
-    },
-    "email": {
-      "type": "string",
-      "format": "email",
-      "description": "Email адрес пользователя"
-    },
-    "createdAt": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Дата создания пользователя"
-    }
-  },
-  "required": ["id", "name", "email"],
-  "additionalProperties": false
-}
+```bash
+# Проверка совместимости между версиями схем
+./check-compatibility.sh
 ```
 
-### Заказ (Order)
+## 🌐 Доступные сервисы
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "orderId": {
-      "type": "string",
-      "description": "Уникальный идентификатор заказа"
-    },
-    "userId": {
-      "type": "integer",
-      "description": "ID пользователя, сделавшего заказ"
-    },
-    "items": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "productId": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "price": {
-            "type": "number",
-            "minimum": 0
-          }
-        },
-        "required": ["productId", "quantity", "price"]
-      }
-    },
-    "totalAmount": {
-      "type": "number",
-      "minimum": 0
-    },
-    "status": {
-      "type": "string",
-      "enum": ["pending", "confirmed", "shipped", "delivered", "cancelled"]
-    }
-  },
-  "required": ["orderId", "userId", "items", "totalAmount", "status"]
-}
+| Сервис | URL | Описание |
+|--------|-----|----------|
+| **Schema Registry** | http://localhost:8081 | API для управления схемами |
+| **Schema Registry UI** | http://localhost:8082 | Веб-интерфейс управления |
+| **Kafka UI** | http://localhost:8080 | Мониторинг Kafka кластера |
+| **Producer API** | http://localhost:3000 | API для отправки сообщений |
+| **Consumer API** | http://localhost:3001 | API для получения сообщений |
+
+## 🔧 Использование схемы
+
+### Регистрация через API
+
+```bash
+curl -X POST \
+  -H "Content-Type: application/vnd.schemaregistry.v1+json" \
+  -d @user-schema.json \
+  http://localhost:8081/subjects/user-value/versions
 ```
 
-### Лог событий (Event Log)
+### Проверка зарегистрированной схемы
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "eventId": {
-      "type": "string",
-      "description": "Уникальный идентификатор события"
-    },
-    "eventType": {
-      "type": "string",
-      "enum": ["user_created", "user_updated", "order_placed", "order_cancelled"]
-    },
-    "timestamp": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "userId": {
-      "type": "integer"
-    },
-    "metadata": {
-      "type": "object",
-      "additionalProperties": true
-    }
-  },
-  "required": ["eventId", "eventType", "timestamp"]
-}
+```bash
+# Список всех субъектов
+curl http://localhost:8081/subjects
+
+# Последняя версия схемы User
+curl http://localhost:8081/subjects/user-value/versions/latest
+
+# Все версии схемы User
+curl http://localhost:8081/subjects/user-value/versions
 ```
 
-## 🔧 Интеграция с Producer/Consumer
-
-### Producer с валидацией схемы
+### Использование в Producer
 
 ```javascript
-const { SchemaRegistry } = require('@kafkajs/confluent-schema-registry');
-
-const schemaRegistry = new SchemaRegistry({
-  host: 'http://localhost:8081'
-});
-
-// Регистрация схемы
-const schema = await schemaRegistry.register({
-  type: 'JSON',
-  schema: JSON.stringify(userSchema)
-});
+// Пример интеграции с Schema Registry
+const { sendUserMessage } = require('./example-producer-usage');
 
 // Отправка сообщения с валидацией
-await producer.send({
-  topic: 'users',
-  messages: [{
-    key: 'user-123',
-    value: await schemaRegistry.encode(schema.id, userData)
-  }]
+await sendUserMessage({
+  name: 'Иван Петров',
+  age: 25
 });
-```
-
-### Consumer с десериализацией
-
-```javascript
-// Получение схемы
-const schema = await schemaRegistry.getSchema(schemaId);
-
-// Десериализация сообщения
-const decodedMessage = await schemaRegistry.decode(message.value);
-```
-
-## 🧪 Тестирование схем
-
-### Проверка совместимости
-
-```bash
-# Проверка совместимости новой версии схемы
-curl -X POST http://localhost:8081/compatibility/subjects/users-value/versions/latest \
-  -H "Content-Type: application/vnd.schemaregistry.v1+json" \
-  -d '{
-    "schema": "{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"integer\"},\"name\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"age\":{\"type\":\"integer\"}},\"required\":[\"id\",\"name\",\"email\"]}"
-  }'
-```
-
-### Удаление схемы
-
-```bash
-# Удаление конкретной версии схемы
-curl -X DELETE http://localhost:8081/subjects/users-value/versions/1
-
-# Удаление всех версий схемы
-curl -X DELETE http://localhost:8081/subjects/users-value
 ```
 
 ## 📊 Мониторинг
 
-### Статистика Schema Registry
+### Schema Registry UI
+- **URL**: http://localhost:8082
+- **Функции**: Просмотр, редактирование, удаление схем
 
-```bash
-# Получение статистики
-curl http://localhost:8081/subjects/users-value/versions/1/schema
+### Kafka UI
+- **URL**: http://localhost:8080
+- **Функции**: Мониторинг топиков, сообщений, схем
 
-# Получение конфигурации
-curl http://localhost:8081/config
+## 🧪 Примеры и тестирование
+
+### Валидные сообщения
+
+**User v1:**
+```json
+{"name": "Анна Сидорова", "age": 30}
 ```
 
-## 🔒 Настройки безопасности
+**User v2:**
+```json
+{"name": "Петр Иванов", "age": 28, "email": "petr@example.com"}
+```
 
-### CORS настройки
+### Отправка через Producer API
+```bash
+curl -X POST http://localhost:3000/send-message \
+  -H "Content-Type: application/json" \
+  -d '{
+    "topic": "user-topic",
+    "message": {"name": "Петр Иванов", "age": 28},
+    "key": "user-002"
+  }'
+```
+
+### ✅ Результаты тестирования
+
+- **Схема v1 зарегистрирована** - ID: 2
+- **Схема v2 зарегистрирована** - ID: 3  
+- **Совместимость проверена** - v2 обратно совместима с v1
+- **Producer API протестирован** - сообщения успешно отправляются
+
+## 🔄 Эволюция схем
+
+### Принципы совместимости
+
+✅ **Разрешено**:
+- Добавление новых полей с значением по умолчанию
+- Изменение типа поля на union с null
+- Удаление необязательных полей
+
+❌ **Запрещено**:
+- Изменение типа существующего поля
+- Удаление обязательных полей
+- Изменение порядка полей
+
+### Проверка совместимости
 
 ```bash
-# Настройка CORS для веб-интерфейса
-curl -X PUT http://localhost:8081/config \
+curl -X POST \
   -H "Content-Type: application/vnd.schemaregistry.v1+json" \
-  -d '{
-    "compatibility": "BACKWARD"
-  }'
+  -d @user-v2-schema.json \
+  http://localhost:8081/compatibility/subjects/user-value/versions/latest
+```
+
+## 🚨 Устранение неполадок
+
+### Schema Registry недоступен
+```bash
+# Проверка статуса контейнера
+docker-compose ps schema-registry
+
+# Просмотр логов
+docker-compose logs schema-registry
+
+# Перезапуск
+docker-compose restart schema-registry
+```
+
+### Ошибка валидации схемы
+- Проверьте синтаксис Avro схемы
+- Убедитесь, что все обязательные поля присутствуют
+- Проверьте типы данных
+
+### Проблемы с Producer API
+```bash
+# Проверка статуса
+curl http://localhost:3000/health
+
+# Просмотр логов
+cd producer
+npm start
 ```
 
 ## 📚 Дополнительные ресурсы
 
-- [Confluent Schema Registry Documentation](https://docs.confluent.io/platform/current/schema-registry/index.html)
-- [JSON Schema Specification](https://json-schema.org/)
-- [Avro Schema Specification](https://avro.apache.org/docs/current/spec.html)
+- [Apache Avro Documentation](https://avro.apache.org/docs/current/)
+- [Confluent Schema Registry](https://docs.confluent.io/platform/current/schema-registry/index.html)
+- [Schema Registry API Reference](https://docs.confluent.io/platform/current/schema-registry/develop/api.html)
 
-## 🚨 Устранение неполадок
+---
 
-### Частые проблемы
+## 🎉 Заключение
 
-1. **Schema Registry недоступен**
-   - Проверьте статус Docker контейнера
-   - Убедитесь, что порт 8081 свободен
+Система схем User обеспечивает типобезопасность, эволюцию схем, обратную совместимость и автоматизацию управления. Готова к продакшн использованию!
 
-2. **Ошибки валидации**
-   - Проверьте формат JSON схемы
-   - Убедитесь в совместимости версий
-
-3. **Проблемы с кодированием/декодированием**
-   - Проверьте ID схемы
-   - Убедитесь в правильности формата данных
+**Удачной работы со Schema Registry! 🚀** 

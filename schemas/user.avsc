@@ -1,0 +1,18 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.kafka.demo",
+  "doc": "Схема для сущности User с базовыми полями",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Имя пользователя"
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "doc": "Возраст пользователя"
+    }
+  ]
+} 

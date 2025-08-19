@@ -1,0 +1,24 @@
+{
+  "type": "record",
+  "name": "User",
+  "namespace": "com.kafka.demo",
+  "doc": "Обновленная схема для сущности User с полем email",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string",
+      "doc": "Имя пользователя"
+    },
+    {
+      "name": "age",
+      "type": "int",
+      "doc": "Возраст пользователя"
+    },
+    {
+      "name": "email",
+      "type": ["null", "string"],
+      "default": null,
+      "doc": "Email пользователя (опциональное поле)"
+    }
+  ]
+} 
