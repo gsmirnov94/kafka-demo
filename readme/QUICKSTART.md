@@ -19,7 +19,7 @@
 - Producer: http://localhost:3000  
 - Consumer: http://localhost:3001
 - Kafka UI: http://localhost:8080
-- Schema Registry UI: http://localhost:8082
+
 
 ### 🐳 Вариант 2: Только инфраструктура в Docker
 ```bash

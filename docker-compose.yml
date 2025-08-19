@@ -64,19 +64,7 @@ services:
       KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
       KAFKA_CLUSTERS_0_SCHEMAREGISTRY: http://schema-registry:8081
 
-  # Alternative Schema Registry UI - using a working image
-  schema-registry-ui:
-    image: landoop/schema-registry-ui:latest
-    container_name: schema-registry-ui
-    depends_on:
-      - schema-registry
-    ports:
-      - "8082:8000"
-    environment:
-      SCHEMAREGISTRY_URL: http://schema-registry:8081
-      PROXY: "true"
-      SCHEMAREGISTRY_UI_TITLE: "Schema Registry UI"
-      SCHEMAREGISTRY_UI_READONLY: "false"
+
 
   # Producer service
   producer:
