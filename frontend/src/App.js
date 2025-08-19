@@ -24,14 +24,14 @@ function App() {
   
   // Producer form state
   const [producerForm, setProducerForm] = useState({
-    topic: '',
+    topic: 'user-topic',
     message: '',
     key: ''
   });
   
   // Consumer form state
   const [consumerForm, setConsumerForm] = useState({
-    topics: ''
+    topics: 'user-topic'
   });
 
   // Initialize socket connection
