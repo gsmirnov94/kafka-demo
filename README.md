@@ -161,6 +161,7 @@ cd schemas
 
 ```
 kafka-demo/
+├── README.md                   # Основная документация проекта
 ├── docker-compose.yml          # Docker инфраструктура
 ├── scripts/                    # Скрипты запуска по платформам
 │   ├── windows/               # Windows batch файлы
@@ -193,7 +194,16 @@ kafka-demo/
 │   ├── create-schemas.sh      # Скрипт создания схем
 │   ├── test-avro-schema.sh    # Тест Avro схемы
 │   └── INSTALL_JQ.md          # Установка jq
-└── README.md
+└── readme/                     # Дополнительная документация
+    ├── QUICKSTART.md          # Быстрый старт
+    ├── LAUNCH.md              # Инструкции по запуску
+    ├── ARCHITECTURE_SIMPLE.md # Упрощенная архитектура
+    ├── ARCHITECTURE_DIAGRAM.md # Детальная архитектура
+    ├── TESTING.md             # Руководство по тестированию
+    ├── DOCKER_SETUP.md        # Настройка Docker
+    ├── NO_DOCKER_SETUP.md     # Альтернатива без Docker
+    ├── START_DOCKER.md        # Запуск Docker Desktop
+    └── PROJECT_SUMMARY.md     # Краткое описание проекта
 ```
 
 ## 🖥️ Скрипты запуска по платформам

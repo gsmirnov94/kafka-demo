@@ -59,11 +59,13 @@ kafka-demo/
 │   └── package.json           # Зависимости
 ├── schemas/                    # 📋 Примеры схем
 │   └── README.md              # Документация Schema Registry
-├── start-demo.sh              # 🐧 Linux/Mac скрипт запуска
-├── start-demo.bat             # 🪟 Windows скрипт запуска
-├── README.md                  # 📚 Полная документация
-├── QUICKSTART.md              # ⚡ Быстрый старт
-└── PROJECT_SUMMARY.md         # 📊 Эта сводка
+├── scripts/                    # 🖥️ Скрипты запуска по платформам
+│   ├── windows/               # Windows batch файлы
+│   └── linux-macos/           # Unix/Linux/macOS shell скрипты
+├── README.md                  # 📚 Основная документация проекта
+└── readme/                    # 📖 Дополнительная документация
+    ├── QUICKSTART.md          # ⚡ Быстрый старт
+    └── PROJECT_SUMMARY.md     # 📊 Эта сводка
 ```
 
 ## 🔧 Технические детали
@@ -98,10 +100,10 @@ kafka-demo/
 ### Автоматический запуск
 ```bash
 # Windows
-start-demo.bat
+scripts\windows\start-demo.bat
 
 # Linux/Mac  
-./start-demo.sh
+./scripts/linux-macos/start-demo.sh
 ```
 
 ### Ручной запуск
