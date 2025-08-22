@@ -23,10 +23,35 @@
 docker-compose up -d
 ```
 
+**Или используйте готовые скрипты:**
+
+**Windows:**
+```cmd
+scripts\windows\start-docker-full.bat
+```
+
+**Linux/macOS:**
+```bash
+./scripts/linux-macos/start-docker-full.sh
+```
+
 **⚠️ Проблемы с Docker?** См. [DOCKER_SETUP.md](DOCKER_SETUP.md) для решения проблем с Docker Desktop.
 
 ### 2. Установка зависимостей
 
+**Автоматическая установка (рекомендуется):**
+
+**Windows:**
+```cmd
+scripts\windows\start-demo.bat
+```
+
+**Linux/macOS:**
+```bash
+./scripts/linux-macos/start-demo.sh
+```
+
+**Ручная установка:**
 ```bash
 # Producer сервис
 cd services/producer
@@ -137,20 +162,30 @@ cd schemas
 ```
 kafka-demo/
 ├── docker-compose.yml          # Docker инфраструктура
-├── producer/                   # Producer сервис
-│   ├── package.json
-│   └── server.js
-├── consumer/                   # Consumer сервис
-│   ├── package.json
-│   └── server.js
-├── frontend/                   # React приложение
-│   ├── public/
-│   ├── src/
-│   │   ├── App.js
-│   │   ├── App.css
-│   │   ├── index.js
-│   │   └── index.css
-│   └── package.json
+├── scripts/                    # Скрипты запуска по платформам
+│   ├── windows/               # Windows batch файлы
+│   │   ├── start-demo.bat     # Основной скрипт запуска
+│   │   ├── test-services.bat  # Тестирование сервисов
+│   │   └── start-docker-full.bat # Полный Docker стек
+│   └── linux-macos/           # Unix/Linux/macOS shell скрипты
+│       ├── start-demo.sh      # Основной скрипт запуска
+│       ├── test-services.sh   # Тестирование сервисов
+│       └── start-docker-full.sh # Полный Docker стек
+├── services/                   # Микросервисы
+│   ├── producer/              # Producer сервис
+│   │   ├── package.json
+│   │   └── server.js
+│   ├── consumer/              # Consumer сервис
+│   │   ├── package.json
+│   │   └── server.js
+│   └── frontend/              # React приложение
+│       ├── public/
+│       ├── src/
+│       │   ├── App.js
+│       │   ├── App.css
+│       │   ├── index.js
+│       │   └── index.css
+│       └── package.json
 ├── schemas/                    # Schema Registry документация и скрипты
 │   ├── README.md              # Обзор Schema Registry
 │   ├── QUICKSTART.md          # Быстрый старт
@@ -160,6 +195,18 @@ kafka-demo/
 │   └── INSTALL_JQ.md          # Установка jq
 └── README.md
 ```
+
+## 🖥️ Скрипты запуска по платформам
+
+### Windows
+- `scripts\windows\start-demo.bat` - Основной скрипт запуска
+- `scripts\windows\test-services.bat` - Тестирование сервисов  
+- `scripts\windows\start-docker-full.bat` - Полный Docker стек
+
+### Linux/macOS
+- `./scripts/linux-macos/start-demo.sh` - Основной скрипт запуска
+- `./scripts/linux-macos/test-services.sh` - Тестирование сервисов
+- `./scripts/linux-macos/start-docker-full.sh` - Полный Docker стек
 
 ## 🛠️ Разработка
 

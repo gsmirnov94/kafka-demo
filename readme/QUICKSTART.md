@@ -4,8 +4,11 @@
 
 ### 🐳 Вариант 1: Полный Docker (рекомендуется)
 ```bash
-# Запуск всех сервисов в Docker
-./start-docker-full.sh
+# Windows
+scripts\windows\start-docker-full.bat
+
+# Linux/Mac
+./scripts/linux-macos/start-docker-full.sh
 ```
 
 **Что включает:**
@@ -35,10 +38,10 @@ docker-compose up -d
 ### 2. Установка зависимостей (автоматически)
 ```bash
 # Windows
-start-demo.bat
+scripts\windows\start-demo.bat
 
 # Linux/Mac
-./start-demo.sh
+./scripts/linux-macos/start-demo.sh
 ```
 
 ### 3. Запуск сервисов (в разных терминалах)

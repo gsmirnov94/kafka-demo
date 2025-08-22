@@ -10,10 +10,10 @@ docker-compose up -d
 ### 2. Автоматическая установка
 ```bash
 # Windows
-start-demo.bat
+scripts\windows\start-demo.bat
 
 # Linux/Mac
-./start-demo.sh
+./scripts/linux-macos/start-demo.sh
 ```
 
 ### 3. Запуск сервисов
