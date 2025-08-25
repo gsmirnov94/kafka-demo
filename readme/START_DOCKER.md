@@ -63,6 +63,14 @@ docker run hello-world
 4. **Сохраните изменения** (F10)
 5. **Перезагрузитесь и попробуйте снова**
 
+### 7. 🚨 WSL 2 не работает (Windows)
+
+Если получаете ошибки WSL 2:
+1. **Обновите WSL**: `wsl --update`
+2. **Перезапустите WSL**: `wsl --shutdown`
+3. **Проверьте статус**: `wsl --status`
+4. **Перезапустите Docker Desktop**
+
 ## ⚡ После запуска Docker
 
 Когда Docker Desktop запустится, выполните:
@@ -71,8 +79,16 @@ docker run hello-world
 # Запуск Kafka Demo
 docker-compose up -d
 
+# Ожидание готовности сервисов (2-3 минуты)
+echo "⏳ Ожидание готовности Kafka и Schema Registry..."
+sleep 30
+
 # Проверка статуса
 docker-compose ps
+
+# Проверка доступности сервисов
+curl http://localhost:8081/subjects  # Schema Registry
+curl http://localhost:8080           # Kafka UI
 ```
 
 ## 🎯 Ожидаемый результат
@@ -89,6 +105,9 @@ Creating kafka-demo_zookeeper_1 ... done
 Creating kafka-demo_kafka_1     ... done
 Creating kafka-demo_schema-registry_1 ... done
 Creating kafka-demo_kafka-ui_1  ... done
+Creating kafka-demo_producer_1  ... done
+Creating kafka-demo_consumer_1  ... done
+Creating kafka-demo_frontend_1  ... done
 ```
 
 ## 🚨 Если Docker Desktop не запускается

@@ -22,6 +22,7 @@ scripts\windows\start-docker-full.bat
 - Producer: http://localhost:3000  
 - Consumer: http://localhost:3001
 - Kafka UI: http://localhost:8080
+- Schema Registry: http://localhost:8081
 
 
 ### 🐳 Вариант 2: Только инфраструктура в Docker
@@ -47,17 +48,19 @@ scripts\windows\start-demo.bat
 ### 3. Запуск сервисов (в разных терминалах)
 ```bash
 # Terminal 1: Producer
-cd producer && npm start
+cd services/producer && npm start
 
 # Terminal 2: Consumer  
-cd consumer && npm start
+cd services/consumer && npm start
 
 # Terminal 3: Frontend
-cd frontend && npm start
+cd services/frontend && npm start
 ```
 
 ## 🌐 Открыть в браузере
-- **Dashboard**: http://localhost:3000
+- **Dashboard**: http://localhost:3002
+- **Producer API**: http://localhost:3000
+- **Consumer API**: http://localhost:3001
 - **Kafka UI**: http://localhost:8080
 - **Schema Registry**: http://localhost:8081
 
@@ -87,14 +90,14 @@ cd frontend && npm start
 
 ### Создание топика
 ```bash
-curl -X POST http://localhost:3001/topics \
+curl -X POST http://localhost:3000/topics \
   -H "Content-Type: application/json" \
   -d '{"topic": "demo-topic"}'
 ```
 
 ### Отправка сообщения
 ```bash
-curl -X POST http://localhost:3001/send-message \
+curl -X POST http://localhost:3000/send-message \
   -H "Content-Type: application/json" \
   -d '{
     "topic": "demo-topic",

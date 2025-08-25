@@ -104,26 +104,26 @@ bin/kafka-console-consumer.sh --topic demo-topic --from-beginning --bootstrap-se
 
 ```bash
 # Terminal 4: Producer
-cd producer
+cd services/producer
 npm install
 npm start
 
 # Terminal 5: Consumer
-cd consumer  
+cd services/consumer  
 npm install
 npm start
 
 # Terminal 6: Frontend
-cd frontend
+cd services/frontend
 npm install
 npm start
 ```
 
 ## 📱 Доступные сервисы
 
-- **React Dashboard**: http://localhost:3000
-- **Producer API**: http://localhost:3001
-- **Consumer API**: http://localhost:3002
+- **React Dashboard**: http://localhost:3002
+- **Producer API**: http://localhost:3000
+- **Consumer API**: http://localhost:3001
 - **Kafka Broker**: localhost:9092
 
 ## 🔧 Конфигурация без Schema Registry

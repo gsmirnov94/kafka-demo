@@ -5,12 +5,12 @@
 ```mermaid
 graph TB
     subgraph "Frontend Layer"
-        UI[React Frontend<br/>Port: 3002]
+        UI[React Frontend<br/>Port: 3002<br/>React 18.2.0 + React Scripts 5.0.1]
     end
     
     subgraph "Application Services"
-        PROD[Producer Service<br/>Port: 3000<br/>Node.js + Express]
-        CONS[Consumer Service<br/>Port: 3001<br/>Node.js + Express + Socket.IO]
+        PROD[Producer Service<br/>Port: 3000<br/>Node.js 18 + Express 4.18.2]
+        CONS[Consumer Service<br/>Port: 3001<br/>Node.js 18 + Express 4.18.2 + Socket.IO 4.7.2]
     end
     
     subgraph "Message Queue Infrastructure"
@@ -19,12 +19,11 @@ graph TB
     end
     
     subgraph "Data Management"
-        SR[Schema Registry<br/>Port: 8081<br/>Avro Schema Validation]
-        SR_UI[Schema Registry UI<br/>Port: 8082<br/>Schema Management]
+        SR[Schema Registry<br/>Port: 8081<br/>JSON + Avro Schema Validation<br/>Version: 7.4.0]
     end
     
     subgraph "Monitoring & Management"
-        KUI[Kafka UI<br/>Port: 8080<br/>Cluster Monitoring]
+        KUI[Kafka UI<br/>Port: 8080<br/>Provectus Kafka UI<br/>Cluster Monitoring]
     end
     
     subgraph "Data Flow"
@@ -298,7 +297,7 @@ graph TB
         
         subgraph "Data Management"
             SR[Schema Registry<br/>Port: 8081<br/>Schema Storage]
-            SR_UI[Schema Registry UI<br/>Port: 8082<br/>Web Interface]
+            SR_UI[Schema Registry<br/>Port: 8081<br/>REST API]
         end
         
         subgraph "Monitoring"
@@ -475,15 +474,15 @@ graph LR
 4. **React Frontend** предоставляет веб-интерфейс для управления всей системой
 
 ### 🛠️ **Ключевые технологии**
-- **Backend**: Node.js + Express.js + KafkaJS
-- **Frontend**: React.js + Socket.IO + Axios
+- **Backend**: Node.js 18 + Express 4.18.2 + KafkaJS 2.2.4
+- **Frontend**: React 18.2.0 + Socket.IO 4.7.2 + Axios 1.4.0
 - **Infrastructure**: Docker + Docker Compose
-- **Message Queue**: Apache Kafka 7.4.0
-- **Schema Management**: Confluent Schema Registry
+- **Message Queue**: Apache Kafka 7.4.0 + Zookeeper 7.4.0
+- **Schema Management**: Confluent Schema Registry 7.4.0 (JSON + Avro)
 
 ### 📊 **Мониторинг и управление**
-- **Kafka UI** для мониторинга кластера Kafka
-- **Schema Registry UI** для управления схемами данных
+- **Kafka UI**: Provectus Kafka UI latest для мониторинга кластера Kafka
+- **Schema Registry REST API** для управления схемами данных
 - **JMX метрики** для производительности
 - **Health check endpoints** для всех сервисов
 

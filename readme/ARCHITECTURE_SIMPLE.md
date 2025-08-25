@@ -90,15 +90,15 @@ React → Producer API → Kafka → Автоматическое создани
 | 🐘 Zookeeper | 2181 | Координация кластера |
 | 📋 Schema Registry | 8081 | Валидация схем данных |
 | 📊 Kafka UI | 8080 | Мониторинг Kafka |
-| 🎨 Schema UI | 8082 | Управление схемами |
 
 ## Технологии
 
-- **Frontend**: React.js + Socket.IO + Axios
-- **Backend**: Node.js + Express.js + KafkaJS
+- **Frontend**: React 18.2.0 + Socket.IO 4.7.2 + Axios 1.4.0
+- **Backend**: Node.js 18 + Express 4.18.2 + KafkaJS 2.2.4
 - **Infrastructure**: Docker + Docker Compose
-- **Message Queue**: Apache Kafka 7.4.0
-- **Schema**: Avro + Schema Registry
+- **Message Queue**: Apache Kafka 7.4.0 + Zookeeper 7.4.0
+- **Schema**: JSON + Avro + Schema Registry 7.4.0
+- **Monitoring**: Provectus Kafka UI latest
 
 ## Преимущества архитектуры
 

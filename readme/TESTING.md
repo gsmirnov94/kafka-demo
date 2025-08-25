@@ -18,6 +18,9 @@ npm --version
 ```bash
 # Проверка свободных портов
 netstat -an | findstr "3000\|3001\|3002\|8080\|8081\|9092"
+
+# Проверка занятых портов
+netstat -an | findstr ":3000\|:3001\|:3002\|:8080\|:8081\|:9092"
 ```
 
 ## 🚀 Пошаговое тестирование
@@ -54,19 +57,19 @@ curl http://localhost:8080
 
 ```bash
 # Producer
-cd producer
+cd services/producer
 npm install
-cd ..
+cd ../..
 
 # Consumer  
-cd consumer
+cd services/consumer
 npm install
-cd ..
+cd ../..
 
 # Frontend
-cd frontend
+cd services/frontend
 npm install
-cd ..
+cd ../..
 ```
 
 **Ожидаемый результат**: Успешная установка без ошибок
@@ -74,13 +77,13 @@ cd ..
 ### Этап 4: Запуск Producer
 
 ```bash
-cd producer
+cd services/producer
 npm start
 ```
 
 **Ожидаемый результат**: 
 ```
-Producer service running on port 3001
+Producer service running on port 3000
 Producer connected to Kafka
 ```
 
@@ -88,15 +91,15 @@ Producer connected to Kafka
 
 ```bash
 # Проверка здоровья
-curl http://localhost:3001/health
+curl http://localhost:3000/health
 
 # Создание топика
-curl -X POST http://localhost:3001/topics \
+curl -X POST http://localhost:3000/topics \
   -H "Content-Type: application/json" \
   -d '{"topic": "test-topic"}'
 
 # Отправка сообщения
-curl -X POST http://localhost:3001/send-message \
+curl -X POST http://localhost:3000/send-message \
   -H "Content-Type: application/json" \
   -d '{
     "topic": "test-topic",
@@ -110,13 +113,13 @@ curl -X POST http://localhost:3001/send-message \
 ### Этап 6: Запуск Consumer
 
 ```bash
-cd consumer
+cd services/consumer
 npm start
 ```
 
-**Ожидаемый результат**:
+**Ожидаемый результат**: 
 ```
-Consumer service running on port 3002
+Consumer service running on port 3001
 Consumer connected to Kafka
 ```
 
@@ -141,7 +144,7 @@ curl http://localhost:3002/status
 
 ```bash
 # Отправка нового сообщения
-curl -X POST http://localhost:3001/send-message \
+curl -X POST http://localhost:3000/send-message \
   -H "Content-Type: application/json" \
   -d '{
     "topic": "test-topic",
@@ -155,15 +158,15 @@ curl -X POST http://localhost:3001/send-message \
 ### Этап 9: Запуск Frontend
 
 ```bash
-cd frontend
+cd services/frontend
 npm start
 ```
 
-**Ожидаемый результат**: React приложение запущено на http://localhost:3000
+**Ожидаемый результат**: React приложение запущено на http://localhost:3002
 
 ### Этап 10: Тестирование UI
 
-1. Открыть http://localhost:3000
+1. Открыть http://localhost:3002
 2. Создать топик через интерфейс
 3. Отправить сообщение
 4. Запустить Consumer
@@ -228,8 +231,8 @@ curl -X POST http://localhost:3002/start-consuming \
 # Проверка CORS
 # Проверка консоли браузера
 # Проверка доступности API
+curl http://localhost:3000/health
 curl http://localhost:3001/health
-curl http://localhost:3002/health
 ```
 
 ## 📊 Метрики производительности
@@ -237,7 +240,7 @@ curl http://localhost:3002/health
 ### Latency тест
 ```bash
 # Измерение времени отправки
-time curl -X POST http://localhost:3001/send-message \
+time curl -X POST http://localhost:3000/send-message \
   -H "Content-Type: application/json" \
   -d '{"topic": "test-topic", "message": "test"}'
 ```
@@ -246,7 +249,7 @@ time curl -X POST http://localhost:3001/send-message \
 ```bash
 # Отправка множества сообщений
 for i in {1..100}; do
-  curl -X POST http://localhost:3001/send-message \
+  curl -X POST http://localhost:3000/send-message \
     -H "Content-Type: application/json" \
     -d "{\"topic\": \"test-topic\", \"message\": \"message-$i\"}" &
 done
