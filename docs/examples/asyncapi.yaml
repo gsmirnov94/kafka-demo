@@ -1,0 +1,50 @@
+asyncapi: 3.0.0
+info:
+  title: Kafka Demo (minimal)
+  version: 1.0.0
+
+servers:
+  default:
+    host: kafka:29092
+    protocol: kafka
+
+channels:
+  user.events:
+    address: user.events
+    messages:
+      UserMessage:
+        $ref: '#/components/messages/UserMessage'
+
+operations:
+  produceUser:
+    action: send
+    channel:
+      $ref: '#/channels/user.events'
+    messages:
+      - $ref: '#/channels/user.events/messages/UserMessage'
+  consumeUser:
+    action: receive
+    channel:
+      $ref: '#/channels/user.events'
+    messages:
+      - $ref: '#/channels/user.events/messages/UserMessage'
+
+components:
+  messages:
+    UserMessage:
+      name: User
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/User'
+  schemas:
+    User:
+      type: object
+      required: [name, age]
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+        email:
+          type: [string, 'null']
+
